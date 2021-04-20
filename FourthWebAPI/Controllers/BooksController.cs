@@ -1,5 +1,9 @@
 ﻿using FourthWebAPI.Models;
+using FourthWebAPI.Operations.CreateBook;
 using FourthWebAPI.Operations.GetBook;
+using FourthWebAPI.Operations.GetBookId;
+using FourthWebAPI.Operations.RemoveBook;
+using FourthWebAPI.Operations.UpdateBook;
 using FourthWebAPI.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -32,45 +36,50 @@ namespace FourthWebAPI.Controllers
         [HttpGet("{id:length(24)}", Name = "GetBook")]
         public ActionResult<Book> Get(string id)
         {
-            var book = _bookService.Get(id);
-            if(book == null)
+            var operation = new GetBookIdOperation(_bookService);
+            var result = operation.GetBookId(id);
+  
+            if(result == null)
             {
                 return NotFound();
             }
-            return book;
+            
+            return result;
         }
 
         [HttpPost]
         public ActionResult<Book> Create(Book book)
         {
-            _bookService.Create(book);
-            return CreatedAtRoute("GetBook", new { id = book.Id.ToString() }, book);
+            var operation = new CreateBookOperation(_bookService);
+            var result = operation.CreateBooks(book);
+            return result;
         }
 
-        [HttpPut("{id:length(24)}")]
-        public IActionResult Update(string id, Book bookIn)
+        [HttpPut("update/{id}")]
+        public ActionResult<string> Update([FromRoute]string id, [FromBody]Book bookIn)
         {
-            var book = _bookService.Get(id);
-            if(book == null)
+            var operation = new UpdateBookOperation(_bookService);
+            
+            if(operation == null)
             {
                 return NotFound();
             }
-
-            _bookService.Update(id, bookIn);
+            operation.UpdateBooks(id, bookIn);
             return NoContent();
         }
 
-        [HttpDelete("{id:length(24)}")]
-        public IActionResult Delete(string id)
+        [HttpDelete("delete/{id}")]
+        public ActionResult<string> Delete([FromRoute] string id)
         {
-            var book = _bookService.Get(id);
-            if(book == null)
+            var operation = new RemoveBookOperation(_bookService);
+
+            if(operation == null)
             {
                 return NotFound();
             }
-
-            _bookService.Remove(book.Id);
-            return NoContent();
+            operation.RemoveBooks(id);
+        
+            return id;
         }
     }
 }

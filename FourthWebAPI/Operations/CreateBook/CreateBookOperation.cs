@@ -5,20 +5,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace FourthWebAPI.Operations.GetBookId
+namespace FourthWebAPI.Operations.CreateBook
 {
-    public class GetBookIdOperation
+    public class CreateBookOperation
     {
-        public GetBookIdOperation(IBookService service)
+        public CreateBookOperation(IBookService service)
         {
             this.BookService = service;
         }
 
         private IBookService BookService;
 
-        public Book GetBookId(string id)
+        public Book CreateBooks(Book book)
         {
-            return this.BookService.Get(id);
+            return this.BookService.Create(book);
         }
     }
 }
