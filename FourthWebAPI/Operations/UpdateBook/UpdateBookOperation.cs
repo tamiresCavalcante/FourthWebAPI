@@ -17,7 +17,6 @@ namespace FourthWebAPI.Operations.UpdateBook
 
         public void UpdateBooks(string id, Book bookIn)
         {
-            
             this.BookService.Update(id, bookIn);
         }
     }

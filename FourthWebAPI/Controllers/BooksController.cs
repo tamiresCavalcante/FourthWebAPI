@@ -39,7 +39,7 @@ namespace FourthWebAPI.Controllers
             var operation = new GetBookIdOperation(_bookService);
             var result = operation.GetBookId(id);
   
-            if(result == null)
+            if(operation == null)
             {
                 return NotFound();
             }
