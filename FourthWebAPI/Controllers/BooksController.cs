@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace FourthWebAPI.Controllers
@@ -19,6 +20,14 @@ namespace FourthWebAPI.Controllers
     public class BooksController : ControllerBase
     {
         private readonly BookService _bookService;
+
+        //HttpClient httpClient;
+
+        //public BooksController(HttpClient httpClient)
+        //{
+        //    this.httpClient = httpClient;
+        //}
+
         public BooksController(BookService bookService)
         {
             _bookService = bookService;
