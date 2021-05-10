@@ -27,7 +27,6 @@ namespace FourthWebApi.UnitTest
     {
         private readonly Mock<IBookService> BookServiceMock = new Mock<IBookService>();
         private readonly Mock<IHttpClient> ClientMock = new Mock<IHttpClient>();
-        //private static readonly HttpClient Client = new HttpClient();
 
         [Fact]
         public void Get_ReturnsTrue_IfTheCollectionIsNotEmpty()
@@ -150,13 +149,15 @@ namespace FourthWebApi.UnitTest
         }
 
         [Fact]
-        public void EndPointGet_ReturnsTrue_IfEndPointWorks()
+        public void EndPointGet_ReturnsTrue_IfEndPointNotNull()
         {
+            //Arrange
             HttpClient httpClient = new HttpClient();
             string getUrl = "https://localhost:5001/api/books";
+            //Act
             var result = httpClient.GetAsync(getUrl);
-
             httpClient.Dispose();
+            //Assert
             Assert.NotNull(result);
         }
         
@@ -174,67 +175,16 @@ namespace FourthWebApi.UnitTest
             Assert.NotNull(httpResponse);
         }
 
-        //[Fact]
-        //public void Testing_httpclient4()
-        //{
-        //    var handlerMock = new Mock<HttpMessageHandler>(MockBehavior.Strict);
-        //    handlerMock.Protected()
-        //        .Setup<Task<HttpResponseMessage>>(
-        //        "SendAsync",
-        //        ItExpr.IsAny<HttpRequestMessage>(),
-        //        ItExpr.IsAny<CancellationToken>()
-        //        )
-        //        .ReturnsAsync(new HttpResponseMessage()
-        //        {
-        //            StatusCode = HttpStatusCode.OK,
-        //            Content = new StringContent(""),
-        //        }).Verifiable();
-
-        //    var httpClient = new HttpClient(handlerMock.Object)
-        //    {
-        //        BaseAddress = new Uri("https://localhost:5001/api/books"),
-        //    };
-
-        //    var subjectUnderTest = new BookServiceTest(httpClient);
-        //    var result = await subjectUnderTest.GetSomethingRemoteAsync()
-        //}
-        /*
-        [Fact]
-        public async Task HttpClient_CallSendAsyncAtLeastOnce()
-        {
-            var httpClient = new Mock<HttpClient>();
-            httpClient.Setup(x => x.SendAsync(It.IsAny<HttpRequestMessage>(), CancellationToken.None))
-                .ReturnsAsync(
-                new HttpResponseMessage()
-                {
-                    StatusCode = System.Net.HttpStatusCode.OK,
-                    Content = new StringContent("{}")
-                })
-                .Verifiable();
-
-            var classToTest = new BooksController(httpClient.Object);
-            var response = classToTest.Get();
-            httpClient.Verify(x => x.SendAsync(It.IsAny<HttpRequestMessage>(), CancellationToken.None), Times.AtLeastOnce);
-        }*/
-        /*
-        [Fact]
-        public void TestingConection()
-        { 
-            HttpResponseMessage httpResponseMessage = new HttpResponseMessage();
-            ClientMock.Setup(c => c.GetAsync<Response>(It.IsAny<string>())
-            .Returns(Task.FromResult(httpResponseMessage)));
-
-            _client = ClientMock.Object;
-            var client = new HttpClientWrapper(_client);
-        }
-        */
+       
+        
         [Fact]
         public void Get_ReturnsTrue_IfTypeString()
         {
-            ClientMock.Setup(r => r.PostAsync(It.IsAny<string>(), It.IsAny<HttpContent>()))
-                .Returns(() => Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK)));
+
+            ClientMock.Setup(r => r.Post(It.IsAny<string>(), It.IsAny<HttpContent>()))
+                .Returns(It.IsAny<string>());
             var service = new HttpClientWrapper();
-            
+
             var result = service.Get(It.IsAny<string>());
             Assert.IsType<string>(result);
         }
@@ -242,29 +192,43 @@ namespace FourthWebApi.UnitTest
         [Fact]
         public void GetBookByReference_ReturnsTrue_IfNotNull()
         {
-            ClientMock.Setup(x => x.Get(It.IsAny<string>()))
+            //Arrange
+            ClientMock
+                .Setup(x => x.Get(It.IsAny<string>()))
                 .Returns(JsonConvert.SerializeObject(new Book { Author = "tami" }));
+            //Act
             var operation = new GetBookByReferenceOperation(ClientMock.Object);
             var bookResponse = operation.GetBookByReference(It.IsAny<string>(), It.IsAny<string>());
-            
+            //Assert
             Assert.NotNull(bookResponse);
+            ClientMock
+                .Verify(x => x.Get(It.IsAny<string>()), Times.Once);
         }
 
-        /*[Fact]
-        public void Get_ReturnTrue_IfNull()
+        [Fact]
+        public void Get_ReturnTrue_IfNotNull()
         {
+            //Arrange
             ClientMock.Setup(x => x.Get(It.IsNotNull<string>()))
-                .Returns( new )
-        }*/
+                .Returns(It.IsAny<string>());
+            //Act
+            var operation = new HttpClientWrapper();
+            var result = operation.Get(It.IsAny<string>());
+            //Assert
+            Assert.NotNull(result);
+        }
 
         [Fact]
         public void Post_ReturnTrue_IfNotNull()
         {
-            ClientMock.Setup(x => x.Post(It.IsAny<string>(), It.IsAny<HttpContent>()))
-                .Returns(new HttpResponseMessage());
-
+            //Arrange
+            ClientMock
+                .Setup(x => x.Post(It.IsAny<string>(), It.IsAny<HttpContent>()))
+                .Returns(It.IsAny<string>());
+            //Act
             var operation = new HttpClientWrapper();
             var result = operation.Post(It.IsAny<string>(), It.IsAny<HttpContent>());
+            //Assert
             Assert.NotNull(result);
         }
     }

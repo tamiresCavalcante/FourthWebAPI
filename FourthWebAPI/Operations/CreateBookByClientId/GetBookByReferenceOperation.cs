@@ -16,8 +16,7 @@ namespace FourthWebAPI.Operations.CreateBookByClientId
             this.HttpClient = httpClient;
         }
 
-        public IHttpClient HttpClient { get; set; }
-       
+        public IHttpClient HttpClient { get; set; }      
 
         public Book GetBookByReference(string reference, string url)
         {

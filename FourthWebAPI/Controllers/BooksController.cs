@@ -1,5 +1,6 @@
 ﻿using FourthWebAPI.Models;
 using FourthWebAPI.Operations.CreateBook;
+using FourthWebAPI.Operations.CreateBookByClientId;
 using FourthWebAPI.Operations.GetBook;
 using FourthWebAPI.Operations.GetBookId;
 using FourthWebAPI.Operations.RemoveBook;
@@ -89,6 +90,14 @@ namespace FourthWebAPI.Controllers
             operation.RemoveBooks(id);
         
             return id;
+        }
+
+        [HttpGet]
+        public Book GetBookByReferenceController([FromRoute] string reference, string url)
+        {
+            GetBookByReferenceOperation operation = new GetBookByReferenceOperation(new HttpClientWrapper());
+            Book result = operation.GetBookByReference(reference, url);
+            return result;
         }
     }
 }
